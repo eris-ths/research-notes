@@ -1,0 +1,77 @@
+name: AI Paper Survey
+
+on:
+  schedule:
+    # 毎週日曜 9:00 JST (UTC 0:00)
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Survey topic (default: LLM)'
+        required: false
+        default: 'LLM'
+
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Paper Survey
+        id: survey
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: --model claude-opus-4-5-20251101 --allowedTools "WebSearch,WebFetch,Read,Write,Edit,Bash"
+          prompt: |
+            あなたはAI研究論文の調査エージェントです。以下のタスクを実行してください：
+
+            ## タスク
+            1. WebSearchを使って、最新のAI論文（${{ github.event.inputs.topic || 'LLM' }}関連）を5-10件調査
+            2. 各論文について以下をまとめる：
+               - タイトル（原文）
+               - 著者
+               - 1行要約（日本語）
+               - 重要度（★1-3）
+               - arxiv/論文URL
+            3. 結果を `results/papers-$(date +%Y-%m-%d).md` に保存
+            4. git add, commit, push
+            5. Issue #13 にコメントで報告（ファイルへのリンク付き）
+
+            ## 出力フォーマット（ファイル）
+            ```markdown
+            # AI論文調査 YYYY-MM-DD
+
+            ## 調査トピック
+            ${{ github.event.inputs.topic || 'LLM' }}
+
+            ## 論文リスト
+
+            ### ★★★ 重要
+            - **[タイトル](URL)** - 著者
+              - 要約
+
+            ### ★★ 注目
+            - ...
+
+            ### ★ 参考
+            - ...
+
+            ## 所感
+            （調査者としてのコメント）
+            ```
+
+            ## 注意
+            - 日本語で出力
+            - 実在する論文のみ（URLが有効なもの）
+            - 推測や架空の論文は絶対に含めない
+          additional_permissions: |
+            actions: read
