@@ -13,10 +13,13 @@ on:
 jobs:
   ember:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@ember')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@ember')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@ember')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@ember') || contains(github.event.issue.title, '@ember')))
+      (github.event.sender.login == 'eris-ths' || github.event.sender.login == 'nao_amj') &&
+      (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@ember')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@ember')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@ember')) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@ember') || contains(github.event.issue.title, '@ember')))
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,6 +39,6 @@ jobs:
         with:
           trigger_phrase: "@ember"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: --system-prompt-file ./EMBER.md
+          claude_args: --system-prompt-file ./EMBER.md --allowedTools "WebSearch,WebFetch"
           additional_permissions: |
             actions: read
