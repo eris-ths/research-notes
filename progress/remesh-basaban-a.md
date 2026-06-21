@@ -34,6 +34,43 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
 
 ## Log
 
+### 2026-06-21 · Sparse SPD solver + implicit smoothing
+
+| before (subdivision only) | after (+ implicit smoothing) |
+|---|---|
+| ![before](../images/implicit-2026-06-21-before.png) | ![after](../images/implicit-2026-06-21-after.png) |
+
+> CAD wireframe of a subdivided box. The HUD (`V 26 E 48 F 24 / χ 2 MANIFOLD`) is identical in both — topology is
+> preserved — while implicit smoothing rounds the corners by *solving a linear system* (not iterating). Unlike
+> Taubin, implicit smoothing shrinks (it diffuses toward the centroid), so this uses a gentle strength.
+> Repro: `--ui` → `reset box` → `/mesh?subdiv=1` (before) / `/mesh?subdiv=1&ismooth=0.5` (after) → `/frame?mode=preview:wire-cad&scene=modeler`.
+
+- **Layer**: A (core keystone + first application)
+  - The zero-dependency sparse SPD solver — the piece the whole stack hangs on — plus its first real use.
+- **What**
+  - `core::sparse`: CSR matrix (triplet→CSR with duplicate accumulation, SpMV, diagonal extraction) +
+    conjugate gradient and Jacobi-preconditioned CG. Fixed iteration order → bit-exact determinism.
+  - `Mesh::implicit_smooth(λ, passes)`: solve `(I + λ L_g) X = X_prev` per axis with Jacobi-PCG, where
+    `L_g = D − A` is the (symmetric, PSD) graph Laplacian — so `(I + λ L_g)` is SPD and CG applies directly.
+  - This is the keystone the survey calls out: implicit smoothing, LSCM UV, cross-field smoothing, and
+    parameterization relaxation all reduce to sparse SPD systems, so one solver unlocks all four.
+- **Source**
+  - CG: Shewchuk, *An Introduction to the Conjugate Gradient Method Without the Agonizing Pain* (1994).
+  - Implicit fairing: Desbrun, Meyer, Schröder, Barr, *Implicit Fairing of Irregular Meshes* (SIGGRAPH '99),
+    backward Euler `(I − λdt L) X^{n+1} = X^n`, **unconditionally stable**. Their umbrella operator is
+    `1/d_i`-normalized (asymmetric) → we use the symmetric unnormalized version so CG applies. Anisotropic
+    cotangent (§5) is the next step — it needs negative-weight robustness (mollification / intrinsic Delaunay).
+- **Verify**
+  - Solver: 7 tests (SpMV vs dense; triplet accumulation; 2×2 known solution in ≤2 iterations; 1D Poisson
+    residual <1e-8 with symmetric solution; random SPD recovery; Jacobi-PCG same solution but faster; determinism).
+  - Smoothing: 6 tests (topology preserved; roughness halved; **unconditional stability — λ=50 × 5 passes, no
+    blow-up**, unlike explicit Taubin; boundary fixed; determinism; spec parse). Full suite 299 green, zero warnings.
+- **Next**
+  - Anisotropic **cotangent** Laplacian (geometry-aware smoothing / curvature flow), then **LSCM UV** — both ride
+    the same solver. Cotangent first needs the negative-weight robustness layer (mollification / iDT).
+- **Ref**
+  - eris-renderer `fc11665` (solver), `7aecafb` (implicit smoothing) · STATUS §4.5 (rows sparse solver, implicit smooth)
+
 ### 2026-06-21 · Taubin λ|μ smoothing
 
 | before (subdivision only) | after (+ Taubin, 25 steps) |
