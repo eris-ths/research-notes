@@ -23,6 +23,14 @@
 ## 進捗ログ
 
 ### 2026-06-21 — Taubin λ|μ smoothing（基盤 A 着工の第一歩 / 前哨）
+
+| before（細分のみ） | after（+ Taubin 25 step） |
+|---|---|
+| ![before](../images/taubin-2026-06-21-before.png) | ![after](../images/taubin-2026-06-21-after.png) |
+
+> 細分した箱（subdiv=1）の角ばったシルエットが、Taubin 平滑で丸まる。モデラの flat preview（PT ビューティショットではない）。背景の薄い面はモデラ scene の下地。
+> 再現: `--ui` 起動 → `reset box` → `/mesh?subdiv=1`（before）/ `/mesh?subdiv=1&taubin=25`（after）→ `/frame?mode=preview:flat&scene=modeler`。
+
 - **何を**: 非収縮ラプラシアン平滑を **疎ソルバの「前」に**出荷。λ 縮ステップ + μ 膨ステップを交互に打ち、収縮を相殺しつつ平滑。1-ring だけで済む（half-edge に既存）= ソルバ不要。`&self → Mesh` 純粋モディファイア、`/mesh?taubin=N`。境界頂点は固定、等重み `w_ij=1/|i*|`、Jacobi 更新で bit 決定論。
 - **原典照合**: Taubin "Geometric Signal Processing on Polygonal Meshes"（EUROGRAPHICS 2000 STAR）を逐語照合。transfer `f(k)=(1−λk)(1−μk)`、pass-band `k_PB=1/λ+1/μ`、推奨値 **λ=0.6307 / μ=−0.6732 / k_PB=0.1**、境界固定（§2）。係数は記憶でなく原典から。
 - **検証**: ユニットテスト 7 緑（位相保存 V/F/χ/manifold 不変・非収縮[素朴ラプラシアンの収縮の半分未満]・粗さ半減[ノイズ球]・境界不動・恒等・決定論・spec パース）。全 286 テスト緑・ビルド警告ゼロ。実機（torus）で頂点が動き位相完全保存（genus 1・valence-4×512 不変）、2 回叩いて bit 一致。
