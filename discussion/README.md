@@ -1,31 +1,33 @@
-# discussion — 討議・意思決定の記録 💬
+# discussion — Decisions of Record 💬
 
-> 複数人（人間 + Claude/エリス）の討議・合意・意思決定の**議事録**を収める棚。
-> `results/`（技術調査・分析の結論）とは別ジャンル：ここは「**決めた／話し合った**」を残す。
+> A shelf for **meeting minutes**: multi-party (human + Claude/Eris) discussion, agreement, and decisions.
+> A different genre from `results/` (research conclusions): this is where we keep *what we decided / talked through*.
 
-## 住み分け
+## How it splits from other shelves
 
-| 棚 | 何を入れるか |
+| Shelf | What goes here |
 |---|---|
-| `results/` | 技術調査・比較・分析の**結論**（〜を調べた） |
-| `discussion/` | 討議・合意・**意思決定の議事録**（〜を決めた／話し合った） |
+| `results/` | conclusions of research / comparison / analysis (*what we investigated*) |
+| `discussion/` | meeting minutes / agreements / **decisions** (*what we decided / talked through*) |
 
-## 命名
+## Naming
 
-`YYYY-MM-DD-<topic>.md`（議事録は日付が一次の索引。時系列で並ぶように日付を先頭に）。
+`YYYY-MM-DD-<topic>.md` — minutes are indexed primarily by date, so the date leads for chronological sorting.
 
-## 継続フロー（このリポへの議事録収録の手順）
+## Ongoing flow (how to record minutes here)
 
-1. 討議の正本（議事録 Markdown）を `discussion/YYYY-MM-DD-<topic>.md` として置く。
-   他リポ由来なら冒頭に **収録メモ（provenance）** を付け、本文中の他リポ内リンクは
-   絶対 URL（`github.com/eris-ths/<repo>/blob/main/...`）へ書き換える。
-2. 下の索引に1行追加。
-3. ブランチに commit & push。
-4. GitHub issue を「入口」として立て、本ファイルへリンク（全文は issue に丸写しせず、
-   エグゼクティブ・サマリ + リンクで足りる。正本はこのファイル＝records outlive writers）。
+1. Place the canonical minutes (Markdown) at `discussion/YYYY-MM-DD-<topic>.md`. If it originates in another
+   repo, add a **provenance note** at the top and rewrite cross-repo links to absolute URLs
+   (`github.com/eris-ths/<repo>/blob/main/...`).
+2. Add one row to the index below.
+3. Commit & push the branch.
+4. Open a GitHub issue as the *entry point* linking to this file (don't paste the full text into the issue — an
+   executive summary plus a link is enough; the file is the canonical record — records outlive writers).
 
-## 索引
+## Index
 
-| 日付 | 議題 | 由来 |
+| Date | Topic | Origin |
 |---|---|---|
-| 2026-06-21 | [リメッシュ系ロードマップ討議（統合版）](2026-06-21-remesh-roadmap.md) | eris-renderer `scene::mesh` の討議を収録 |
+| 2026-06-21 | [Remesh roadmap discussion (consolidated)](2026-06-21-remesh-roadmap.md) | minutes from eris-renderer `scene::mesh` |
+
+> Note: the 2026-06-21 minutes body is in Japanese (a historical snapshot). New posts going forward are in English.
