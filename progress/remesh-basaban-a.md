@@ -34,6 +34,42 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
 
 ## Log
 
+### 2026-06-21 · LSCM UV unwrapping
+
+| dome (curved disk patch, 3D) | LSCM-flattened atlas |
+|---|---|
+| ![dome 3d](../images/lscm-2026-06-21-3d.png) | ![lscm flat](../images/lscm-2026-06-21-flat.png) |
+
+> A curved open patch (`dome` seed) unwrapped to a flat 2D atlas by least-squares conformal mapping. CAD wireframe;
+> the HUD (`V 81 E 144 F 64 / χ 1 MANIFOLD`) is identical — same topology, just laid flat. The grid spacing in the
+> atlas reflects the conformal map (angle-preserving), so the squares stay near-square.
+> Repro: `--ui` → `reset dome` → `/frame?mode=preview:wire-cad&scene=modeler` (3D) / `/mesh?lscm=flat` then same frame (atlas).
+
+- **Layer**: A (solver application #2)
+  - UV unwrap — the second use of the sparse solver, and half of the AI-first core feature (declare → parameterize
+    → UV → bake).
+- **What**
+  - `Mesh::lscm_uv()`: least-squares conformal map. Per triangle, project to a local orthonormal frame, form the
+    complex coefficients W (edge vectors), and assemble the normal equations `AᵀA`, `Aᵀb` directly (transpose-free,
+    FEM-style rank-1 accumulation), then solve with Jacobi-PCG. Two vertices pinned (ends of an approximate graph
+    diameter).
+  - `AᵀA` is SPD once ≥2 vertices are pinned, so LSCM rides the existing solver **without** needing the cotangent
+    robustness backbone — that was the reason to do LSCM before geometry-aware (cotangent) smoothing.
+  - `/mesh?lscm=flat` shows the flattened atlas in the CAD wireframe; `dome` is a new open-patch test surface.
+- **Source**
+  - Lévy, Petitjean, Ray, Maillot, *Least Squares Conformal Maps for Automatic Texture Atlas Generation*
+    (SIGGRAPH 2002), §2.4–2.6: `W_j` = local edge vectors as complex numbers, `C(T) = (1/dT)|Σ_j W_j U_j|²`,
+    solution `x = (AᵀA)⁻¹ Aᵀb`, `AᵀA` SPD for ≥2 pins. Verified verbatim against the paper.
+- **Verify**
+  - 4 tests: **planar patch is conformal — per-triangle angles preserved to max_err < 1e-6** (the core correctness
+    check); pinned vertices land exactly; determinism; a bent (non-planar) patch converges. Full suite 303 green,
+    zero warnings. Live: `dome` (a curved disk patch) unwraps to a flat atlas with topology preserved.
+- **Next**
+  - Bake a checker into the UV to visualize distortion on the 3D surface; automatic seams (for closed meshes); then
+    the cotangent / cross-field track.
+- **Ref**
+  - eris-renderer `f44a6b7` · STATUS §4.5 (row M4.2 LSCM UV)
+
 ### 2026-06-21 · Sparse SPD solver + implicit smoothing
 
 | before (subdivision only) | after (+ implicit smoothing) |
