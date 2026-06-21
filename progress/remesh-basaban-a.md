@@ -34,6 +34,39 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
 
 ## Log
 
+### 2026-06-21 · UV checker bake (parameterization → bake)
+
+![dome with checker baked on LSCM UV](../images/lscm-checker-2026-06-21.png)
+
+> A checker pattern baked into the LSCM UV of the `dome` patch and shown on the 3D surface (ambient-occlusion
+> preview). Because LSCM is conformal — it preserves angles — the checker stays square almost everywhere; where the
+> surface curves up (the bump in the middle) the cells stretch, which is exactly the **area distortion** a conformal
+> map trades away to keep angles. So the checker is a direct readout of the parameterization quality.
+> Repro: `--ui` → `reset dome` → `/mesh?lscm=checker` → `/frame?mode=preview:ao&scene=modeler`.
+
+- **Layer**: A (solver application #2 — bake stage)
+  - Completes the AI-first core loop: **declare → parameterize → UV → bake**. The previous entry produced the UV;
+    this one consumes it, so an agent with no eyes can now lay a texture on a generated surface and *see* the
+    distortion as a number-free picture.
+- **What**
+  - `Mesh::tessellate_lscm(mat)`: bakes the LSCM UV into `Tri::new_uv`, normalized to `[0,1]²` (aspect-preserving),
+    so a UV-space pattern lays down uniformly.
+  - `ProcTex::CheckerUV { a, b, scale }`: a checker cut in UV space — a separate variant from the existing
+    world-space `Checker` (which cuts on `p.xz`), so nothing existing changes. The renderer already routes per-hit
+    UV through `albedo_at`, so every integrator picks it up on one path.
+  - The Flat/AO previews now read `albedo_at` (procedural textures included) instead of the raw material albedo, so
+    baked patterns are visible without a full path trace.
+- **Source**
+  - Same LSCM map as the prior entry (Lévy 2002). The conformal/area-distortion reading is the defining property of
+    conformal maps — angle-preserving, not area-preserving.
+- **Verify**
+  - Tests: baked UVs lie in `[0,1]²`; a planar patch stays angle-preserving after baking; determinism. Full suite
+    304 green, zero warnings. Live: `dome` shows square cells that stretch over the curved bump.
+- **Next**
+  - Automatic seams (UV for closed meshes, which need a cut graph first); then the cotangent / cross-field track.
+- **Ref**
+  - eris-renderer (branch `claude/mesh-taubin-smoothing`) · STATUS §4.5 (row M4.2 LSCM bake)
+
 ### 2026-06-21 · LSCM UV unwrapping
 
 | dome (curved disk patch, 3D) | LSCM-flattened atlas |
