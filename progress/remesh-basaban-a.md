@@ -34,6 +34,53 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
 
 ## Log
 
+### 2026-06-21 · Cotangent curvature-flow smoothing (intrinsic-Delaunay robustness stack)
+
+| before (subdivided dome) | after (+ cotangent curvature flow) |
+|---|---|
+| ![before](../images/cotan-2026-06-21-before.png) | ![after](../images/cotan-2026-06-21-after.png) |
+
+> CAD wireframe of a subdivided `dome` patch. The HUD (`V 289 E 544 F 256 / X 1 MANIFOLD`) is identical — topology
+> preserved — and the fixed boundary keeps the patch from shrinking, while the curvature flow flattens the central
+> bump (the silhouette's top edge drops ~10px). Unlike the uniform-weight (graph-Laplacian) smoother, this one is
+> geometry-aware: the weights depend on edge lengths, so it stays correct on uneven triangulations.
+> Repro: `--ui` → `reset dome` → `/mesh?subdiv=1` (before) / `/mesh?subdiv=1&cot=0.5:2` (after) → `/frame?mode=preview:wire-cad&scene=modeler`.
+
+- **Layer**: A (cotangent track — the negative-weight robustness backbone, now complete)
+  - The cotangent Laplacian is the geometry-aware operator the whole smoothing/parameterization stack eventually
+    wants. Its weights go negative on obtuse triangles, which breaks SPD and folds faces. This entry lands the
+    three-stage fix and rides it into a working curvature-flow smoother.
+- **What**
+  - Stage 1 — **intrinsic mollification**: add one uniform offset to every edge length so all triangles satisfy the
+    triangle inequality with a margin (degeneracy/NaN guard; connectivity and vertices untouched).
+  - Stage 2 — **intrinsic Delaunay flips**: flip edges on the intrinsic metric (vertices fixed) until every interior
+    edge is Delaunay (`cot α + cot β ≥ 0`). By Bobenko-Springborn Prop. 17 this makes the cotan weights non-negative,
+    so the Laplacian is SPD again. Flip lengths come from a 2D unfolding (`‖p1 − p3‖`), not the trig closed form
+    (which is the usual reconstruction bug); non-convex diamonds are rejected.
+  - Stage 3 — **cotangent curvature flow**: solve `(M − t·L_c) X = M X^n` (backward Euler, unconditionally stable)
+    per axis with the existing Jacobi-PCG, mollifying and flipping each pass. Boundary vertices are Dirichlet-fixed.
+- **Source**
+  - Mollification: Sharp & Crane, *A Laplacian for Nonmanifold Triangle Meshes* (SGP 2020). iDT: Bobenko & Springborn
+    2007; Fisher/Springborn/Schröder/Bobenko 2007. Curvature flow / mass matrix: Desbrun et al. (SIGGRAPH 1999),
+    Meyer et al. 2003. All formulas verified verbatim against the primary PDFs before coding; the survey that holds
+    them (with the per-source disagreements flagged) is the source of truth, not memory.
+  - One trap worth recording: the mollification margin δ is quoted as 1e-4, 1e-5, **and** 1e-6 × mean-edge-length by
+    the paper, the course notes, and the reference library respectively — three primary sources, three values. We
+    chose the course's 1e-5·h and cited it rather than guessing.
+- **Verify**
+  - Stage tests, expected values from the survey's checklist: equilateral shared-edge weight = `1/√3` exactly (pins
+    the cotan formula, sign, and which edge is "opposite"); a stretched grid full of obtuse triangles becomes
+    all-non-negative-weight after flipping (the Prop. 17 guarantee, checked numerically); flips are idempotent on a
+    second pass (termination); the flow is unconditionally stable at `t = 100 × 5 passes`; `L·1 = 0`, symmetry, and
+    bit-determinism throughout. Full suite 320 green, zero warnings.
+  - A determinism bug surfaced and was fixed honestly: the weight map iterated a hash map, so floating sums differed
+    by 2 ULP between runs — sorting the edge keys restored bit-identical output.
+- **Next**
+  - Voronoi mixed mass (currently barycentric); a `cot` vs uniform side-by-side on a deliberately uneven mesh; the
+    tufted cover (stage 3 of robustness, for boundary/non-manifold) when those inputs actually arrive.
+- **Ref**
+  - eris-renderer (branch `claude/mesh-taubin-smoothing`) · STATUS §4.5 (rows 内在幾何 ①②③) · design/COTANGENT-ROBUSTNESS-SURVEY.md
+
 ### 2026-06-21 · UV checker bake (parameterization → bake)
 
 ![dome with checker baked on LSCM UV](../images/lscm-checker-2026-06-21.png)
