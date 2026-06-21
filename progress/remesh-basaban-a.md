@@ -7,6 +7,10 @@
 > - Decision of record: [`discussion/2026-06-21-remesh-roadmap.md`](../discussion/2026-06-21-remesh-roadmap.md) (three-layer map A/A′/B + injectivity backbone, D1–D14)
 > - Source of truth for implementation status: [eris-renderer STATUS.md §4.5](https://github.com/eris-ths/eris-renderer/blob/main/docs/reference/STATUS.md) (this log is a summary; details live there)
 > - Survey: [MESH-EDITING-LANDSCAPE-SURVEY.md §13](https://github.com/eris-ths/eris-renderer/blob/main/docs/design/MESH-EDITING-LANDSCAPE-SURVEY.md) (near-term stack and sequencing)
+>
+> **Note on branch**: the code for these entries currently lives on the eris-renderer feature branch
+> `claude/foundation-a-mesh-solver` and is **not yet merged to `main`** (no PR opened yet). The `main`-pinned links
+> above will show the merged state once it lands; until then the per-entry `Ref` lines name the branch.
 
 **Screenshots**: modeling-heavy work, so CAD-style wireframe (`mode=preview:wire-cad` — black background, primary-color
 edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beauty path-traced shots.
@@ -79,7 +83,7 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
   - Voronoi mixed mass (currently barycentric); a `cot` vs uniform side-by-side on a deliberately uneven mesh; the
     tufted cover (stage 3 of robustness, for boundary/non-manifold) when those inputs actually arrive.
 - **Ref**
-  - eris-renderer (branch `claude/mesh-taubin-smoothing`) · STATUS §4.5 (rows 内在幾何 ①②③) · design/COTANGENT-ROBUSTNESS-SURVEY.md
+  - eris-renderer (branch `claude/foundation-a-mesh-solver`) · STATUS §4.5 (rows 内在幾何 ①②③) · design/COTANGENT-ROBUSTNESS-SURVEY.md
 
 ### 2026-06-21 · UV checker bake (parameterization → bake)
 
@@ -112,7 +116,7 @@ edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beaut
 - **Next**
   - Automatic seams (UV for closed meshes, which need a cut graph first); then the cotangent / cross-field track.
 - **Ref**
-  - eris-renderer (branch `claude/mesh-taubin-smoothing`) · STATUS §4.5 (row M4.2 LSCM bake)
+  - eris-renderer (branch `claude/foundation-a-mesh-solver`) · STATUS §4.5 (row M4.2 LSCM bake)
 
 ### 2026-06-21 · LSCM UV unwrapping
 
