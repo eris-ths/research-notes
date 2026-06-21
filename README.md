@@ -18,6 +18,7 @@
 
 - `results/` — 技術調査・分析の結論（〜を調べた）
 - [`discussion/`](discussion/) — 討議・意思決定の議事録（〜を決めた／話し合った）💬
+- [`progress/`](progress/) — 実装進捗の living ログ（〜を作っている。節目を先頭に追記）📈
 
 ---
 
