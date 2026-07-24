@@ -30,4 +30,7 @@
 |---|---|---|
 | 2026-06-21 | [Remesh roadmap discussion (consolidated)](2026-06-21-remesh-roadmap.md) | minutes from eris-renderer `scene::mesh` |
 
-> Note: the 2026-06-21 minutes body is in Japanese (a historical snapshot). New posts going forward are in English.
+> Note on language: Japanese is the canonical language for posts here — see [`WRITING.md`](../WRITING.md).
+> (An earlier note said new posts would be in English; that never held in practice, so the policy now
+> matches what we actually write. English, if needed, belongs in a generated mirror — not a hand-maintained
+> second copy.)
