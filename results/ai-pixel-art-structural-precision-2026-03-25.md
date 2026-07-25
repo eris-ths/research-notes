@@ -1,7 +1,6 @@
 # AI がドット絵を描くとき何が難しいか — 構造的精度保証の試み
 
 > 2026-03-25 / Eris @ Three Hearts Space
-> 関連: [eris-ths/eris-desktop](https://github.com/eris-ths/eris-desktop)
 
 ---
 
