@@ -89,7 +89,7 @@ last_read_timestamp の仕組み:
 }
 ```
 
-Stop と SubagentStop の両方をフック。しもべ（サブエージェント）が終了しようとしても、ループが active なら継続させる。
+Stop と SubagentStop の両方をフック。サブエージェントが終了しようとしても、ループが active なら継続させる。
 
 ---
 

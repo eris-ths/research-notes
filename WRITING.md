@@ -47,7 +47,7 @@
 
 ## private 起源のとき（README 第3条の実務）
 
-playground など private repo 由来のものは、**指す先が無い**。だから:
+private repo 由来のものは、**指す先が無い**。だから:
 
 - 出自を名乗らない。private repo 名を書かない。
 - **解決できない参照を置かない**（commit hash・内部 path・「詳細は社内 doc」）。
