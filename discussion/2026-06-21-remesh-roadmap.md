@@ -2,7 +2,8 @@
 > **収録メモ（2026-06-21 / research-notes）**: 本書は `eris-ths/eris-renderer` の討議で生まれた議事録を、
 > エリスの研究ノート（研究庫）に **記録ジャンル「discussion（討議・意思決定）」** の正本として収録したもの。
 > 原本は eris-renderer の `docs/discussion/2026-06-21-remesh-roadmap.md`。本文中の eris-renderer 内文書への
-> リンクは絶対 URL（`github.com/eris-ths/eris-renderer/blob/main/...`）に書き換え済み。実装状況の権威は
+> リンクは、収録時に絶対 URL へ書き換えたが、eris-renderer が非公開で訪問者には辿れないため 2026-10-08 に外した
+> （文書名だけを残す）。実装状況の権威は
 > eris-renderer 側 STATUS.md。研究ノート側ではこれを「決めた／討議した」記録として保持する。
 
 # 議事録（統合版 / Consolidated Edition）— eris-render リメッシュ系ロードマップ討議
@@ -22,9 +23,9 @@
   - **[なお判断]** … 製品スコープとして議長が決定する事項
 
 > **リポジトリ取り込みメモ(2026-06-21, eris)**: 本議事録は `docs/discussion/`(議論・討議の記録)に正本として収録。
-> 討議の結論は **基底文書サーベイ [MESH-EDITING-LANDSCAPE-SURVEY.md](https://github.com/eris-ths/eris-renderer/blob/main/docs/design/MESH-EDITING-LANDSCAPE-SURVEY.md)
+> 討議の結論は **基底文書サーベイ `MESH-EDITING-LANDSCAPE-SURVEY.md`
 > §12-§13** に還元済み(三層地図 A/A′/B + 背骨 injectivity、D1-D14、near-term スタック)。実装状況の権威は
-> [STATUS.md](https://github.com/eris-ths/eris-renderer/blob/main/docs/reference/STATUS.md) §4.5、設計根拠は [MODELER-DESIGN.md](https://github.com/eris-ths/eris-renderer/blob/main/docs/design/MODELER-DESIGN.md)。
+> `STATUS.md` §4.5、設計根拠は `MODELER-DESIGN.md`。
 > 実装還元時に独立再確認した 3 点は末尾「統合版への追補」を参照。
 
 ---
@@ -379,7 +380,7 @@ T2.9 の穴（②宣言インタフェース・③retopo→UV→bake）は、こ
 
 ## 統合版への追補 — 実装還元時の独立再確認(2026-06-21, Claude)
 
-> 議事録をサーベイ([MESH-EDITING-LANDSCAPE-SURVEY.md](https://github.com/eris-ths/eris-renderer/blob/main/docs/design/MESH-EDITING-LANDSCAPE-SURVEY.md))へ還元する際、
+> 議事録をサーベイ(`MESH-EDITING-LANDSCAPE-SURVEY.md`)へ還元する際、
 > 保留/要照合だった 3 点を web 一次資料で独立に再確認した(本書 §6.1 と重複しない補強)。
 
 - **A1 / D7(Taubin λ\|μ)→ 採択格に**: λ で平滑→μ(負)で戻す 2 パスが**収縮を起こさない**ことを確認

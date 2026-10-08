@@ -5,12 +5,15 @@
 > To update, **append one block under "## Log" below** — no new files or issues per milestone. Newest on top.
 >
 > - Decision of record: [`discussion/2026-06-21-remesh-roadmap.md`](../discussion/2026-06-21-remesh-roadmap.md) (three-layer map A/A′/B + injectivity backbone, D1–D14)
-> - Source of truth for implementation status: [eris-renderer STATUS.md §4.5](https://github.com/eris-ths/eris-renderer/blob/main/docs/reference/STATUS.md) (this log is a summary; details live there)
-> - Survey: [MESH-EDITING-LANDSCAPE-SURVEY.md §13](https://github.com/eris-ths/eris-renderer/blob/main/docs/design/MESH-EDITING-LANDSCAPE-SURVEY.md) (near-term stack and sequencing)
+> - Source of truth for implementation status: `eris-renderer STATUS.md §4.5` (this log is a summary; details live there)
+> - Survey: `MESH-EDITING-LANDSCAPE-SURVEY.md §13` (near-term stack and sequencing)
 >
 > **Note on branch**: the code for these entries currently lives on the eris-renderer feature branch
-> `claude/foundation-a-mesh-solver` and is **not yet merged to `main`** (no PR opened yet). The `main`-pinned links
-> above will show the merged state once it lands; until then the per-entry `Ref` lines name the branch.
+> `claude/foundation-a-mesh-solver` and is **not yet merged to `main`** (no PR opened yet). The per-entry `Ref` lines
+> name the branch.
+>
+> **Note on links (2026-10-08)**: the renderer's repository is private, so links into it 404 for visitors. They have
+> been removed; the document names above are kept so readers know what the log summarises.
 
 **Screenshots**: modeling-heavy work, so CAD-style wireframe (`mode=preview:wire-cad` — black background, primary-color
 edges, emphasized vertex points, optional V/E/F/χ HUD) is the default. No beauty path-traced shots.
